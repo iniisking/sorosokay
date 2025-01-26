@@ -1,5 +1,4 @@
 # sorosokay
-<<<<<<< HEAD
 
 A new Flutter project.
 
@@ -15,6 +14,5 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
-=======
+
 A note taking mobile application that uses a speech-to-text feature but in the Yoruba language.
->>>>>>> cc7ab10fe0fd3123da4a6ce2fac50847c83adb92
