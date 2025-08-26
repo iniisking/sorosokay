@@ -36,7 +36,7 @@ class SpeechService {
           }
         },
         localeId: 'en_US',
-        listenMode: ListenMode.dictation,
+        listenOptions: SpeechListenOptions(listenMode: ListenMode.dictation),
       );
     }
   }

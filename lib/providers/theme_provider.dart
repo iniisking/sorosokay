@@ -44,12 +44,11 @@ class ThemeProvider with ChangeNotifier {
         fontWeight: FontWeight.bold,
       ),
     ),
-    cardTheme: CardTheme(
+    cardTheme: const CardThemeData(
       color: Colors.white,
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+          borderRadius: BorderRadius.all(Radius.circular(12))),
     ),
   );
 
@@ -70,12 +69,11 @@ class ThemeProvider with ChangeNotifier {
         fontWeight: FontWeight.bold,
       ),
     ),
-    cardTheme: CardTheme(
-      color: const Color(0xFF1E1E1E),
+    cardTheme: const CardThemeData(
+      color: Color(0xFF1E1E1E),
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+          borderRadius: BorderRadius.all(Radius.circular(12))),
     ),
   );
 }

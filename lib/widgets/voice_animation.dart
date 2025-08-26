@@ -45,9 +45,10 @@ class _VoiceAnimationState extends State<VoiceAnimation>
                 width: 100 - (index * 20).toDouble(),
                 height: 100 - (index * 20).toDouble(),
                 decoration: BoxDecoration(
-                  color: _colors[index].withOpacity(
-                    (1 - (_controller.value + (index * 0.2)) % 1)
-                        .clamp(0.2, 0.8),
+                  color: _colors[index].withValues(
+                    alpha: ((1 - (_controller.value + (index * 0.2)) % 1)
+                            .clamp(0.2, 0.8))
+                        .toDouble(),
                   ),
                   shape: BoxShape.circle,
                 ),
