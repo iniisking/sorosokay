@@ -11,9 +11,9 @@ Note: current implementation uses `speech_to_text` with `en_US`. Yoruba locale s
 
 ![Voice to note flow](docs/videos/tts_demo.gif)
 
-![Voice to note flow](docs/videos/theme_demo.gif)
+![Create note](docs/videos/theme_demo.gif)
 
-![Voice to note flow](docs/videos/create_note_demo.gif)
+![Theme](docs/videos/create_note_demo.gif)
 
 <!-- ![Notes list screen](docs/screens/notes_list.png) -->
 
