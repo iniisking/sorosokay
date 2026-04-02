@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
@@ -16,14 +17,12 @@ class SettingsScreen extends StatelessWidget {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              Card(
-                child: ListTile(
-                  title: const Text('Dark Mode'),
-                  trailing: Switch(
-                    value: themeProvider.isDarkMode,
-                    onChanged: (_) => themeProvider.toggleTheme(),
-                    activeColor: Theme.of(context).colorScheme.primary,
-                  ),
+              ListTile(
+                title: const Text('Dark Mode'),
+                trailing: CupertinoSwitch(
+                  value: themeProvider.isDarkMode,
+                  onChanged: (_) => themeProvider.toggleTheme(),
+                  activeTrackColor: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ],
