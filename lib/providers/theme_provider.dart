@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../services/database_service.dart';
 
 class ThemeProvider with ChangeNotifier {
   static const String _themeKey = 'theme_mode';
@@ -12,15 +12,17 @@ class ThemeProvider with ChangeNotifier {
   }
 
   Future<void> _loadTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    _isDarkMode = prefs.getBool(_themeKey) ?? false;
+    final stored = await DatabaseService.instance.getPreference(_themeKey);
+    _isDarkMode = stored == 'dark';
     notifyListeners();
   }
 
   Future<void> toggleTheme() async {
     _isDarkMode = !_isDarkMode;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_themeKey, _isDarkMode);
+    await DatabaseService.instance.setPreference(
+      _themeKey,
+      _isDarkMode ? 'dark' : 'light',
+    );
     notifyListeners();
   }
 
@@ -50,6 +52,11 @@ class ThemeProvider with ChangeNotifier {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12))),
     ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: Colors.white,
+      selectedItemColor: Color.fromARGB(255, 0, 55, 255),
+      unselectedItemColor: Colors.grey,
+    ),
   );
 
   static final _darkTheme = ThemeData(
@@ -74,6 +81,11 @@ class ThemeProvider with ChangeNotifier {
       elevation: 2,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12))),
+    ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: const Color(0xFF1E1E1E),
+      selectedItemColor: const Color.fromARGB(255, 112, 145, 255),
+      unselectedItemColor: Colors.grey.shade500,
     ),
   );
 }

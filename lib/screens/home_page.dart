@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'voice_screen.dart';
 import 'content_screen.dart';
 import 'settings_screen.dart';
 import '../models/note.dart';
+import '../providers/notes_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,43 +15,37 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  final List<Note> _notes = [];
 
-  void _onNoteCreated(String content) {
-    setState(() {
-      _notes.insert(
-        0,
-        Note(
-          id: DateTime.now().toString(),
-          content: content,
-          timestamp: DateTime.now(),
-        ),
-      );
-    });
+  Future<void> _onNoteCreated(String content) async {
+    final note = Note(
+      id: DateTime.now().toString(),
+      content: content,
+      timestamp: DateTime.now(),
+    );
+    await context.read<NotesProvider>().addNote(note);
   }
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
       VoiceScreen(onNoteCreated: _onNoteCreated),
-      ContentScreen(notes: _notes),
+      const ContentScreen(),
       const SettingsScreen(),
     ];
 
     return Scaffold(
       body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+        elevation: 0,
+
         items: const [
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage('assets/images/voice.png'),
-            ),
+            icon: ImageIcon(AssetImage('assets/images/voice.png')),
             label: 'Voice',
           ),
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage('assets/images/document.png'),
-            ),
+            icon: ImageIcon(AssetImage('assets/images/document.png')),
             label: 'Notes',
           ),
           BottomNavigationBarItem(
@@ -59,8 +55,8 @@ class _HomePageState extends State<HomePage> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: const Color.fromARGB(255, 0, 55, 255),
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+        unselectedItemColor: Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
         type: BottomNavigationBarType.fixed,
       ),
     );

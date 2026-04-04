@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../models/note.dart';
+import '../providers/notes_provider.dart';
 import 'edit_note_screen.dart';
 
 class ContentScreen extends StatefulWidget {
-  final List<Note> notes;
-
-  const ContentScreen({
-    super.key,
-    required this.notes,
-  });
+  const ContentScreen({super.key});
 
   @override
   State<ContentScreen> createState() => _ContentScreenState();
@@ -18,9 +15,7 @@ class ContentScreen extends StatefulWidget {
 
 class _ContentScreenState extends State<ContentScreen> {
   Future<void> _handleRefresh() async {
-    // Add any refresh logic here if needed
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() {});
+    await context.read<NotesProvider>().loadNotes();
   }
 
   String _getFormattedTime(DateTime timestamp) {
@@ -36,6 +31,7 @@ class _ContentScreenState extends State<ContentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final notes = context.watch<NotesProvider>().notes;
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Notes'),
@@ -50,7 +46,7 @@ class _ContentScreenState extends State<ContentScreen> {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           animSpeedFactor: 2,
           showChildOpacityTransition: false,
-          child: widget.notes.isEmpty
+          child: notes.isEmpty
               ? const Center(
                   child: Text(
                     'No notes yet',
@@ -61,7 +57,7 @@ class _ContentScreenState extends State<ContentScreen> {
                   ),
                 )
               : ListView.builder(
-                  itemCount: widget.notes.length,
+                  itemCount: notes.length,
                   padding: const EdgeInsets.only(
                     top: 16,
                     bottom: 100,
@@ -69,7 +65,7 @@ class _ContentScreenState extends State<ContentScreen> {
                     right: 16,
                   ),
                   itemBuilder: (context, index) {
-                    final note = widget.notes[index];
+                    final note = notes[index];
                     return Dismissible(
                       key: Key(note.id),
                       direction: DismissDirection.endToStart,
@@ -82,16 +78,17 @@ class _ContentScreenState extends State<ContentScreen> {
                           color: Colors.white,
                         ),
                       ),
-                      onDismissed: (direction) {
-                        setState(() {
-                          widget.notes.removeAt(index);
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Note deleted'),
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
+                      confirmDismiss: (direction) async {
+                        await context.read<NotesProvider>().deleteNote(note.id);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Note deleted'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                        return true;
                       },
                       child: Card(
                         margin: const EdgeInsets.only(bottom: 16),
@@ -154,16 +151,13 @@ class _ContentScreenState extends State<ContentScreen> {
           ),
           onSave: (content) {
             if (content.isNotEmpty) {
-              setState(() {
-                widget.notes.insert(
-                  0,
-                  Note(
-                    id: DateTime.now().toString(),
-                    content: content,
-                    timestamp: DateTime.now(),
-                  ),
-                );
-              });
+              context.read<NotesProvider>().addNote(
+                    Note(
+                      id: DateTime.now().toString(),
+                      content: content,
+                      timestamp: DateTime.now(),
+                    ),
+                  );
             }
           },
         ),
@@ -178,9 +172,7 @@ class _ContentScreenState extends State<ContentScreen> {
         builder: (context) => EditNoteScreen(
           note: note,
           onSave: (updatedContent) {
-            setState(() {
-              note.content = updatedContent;
-            });
+            context.read<NotesProvider>().updateNote(note.id, updatedContent);
           },
         ),
       ),

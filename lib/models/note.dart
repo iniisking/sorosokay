@@ -17,11 +17,11 @@ class Note {
     };
   }
 
-  factory Note.fromMap(Map<String, dynamic> map) {
+  factory Note.fromMap(Map<String, Object?> map) {
     return Note(
-      id: map['id'],
-      content: map['content'],
-      timestamp: DateTime.parse(map['timestamp']),
+      id: map['id']! as String,
+      content: map['content']! as String,
+      timestamp: DateTime.parse(map['timestamp']! as String),
     );
   }
 }
